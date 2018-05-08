@@ -8,7 +8,27 @@ import kotlinx.android.synthetic.main.activity_forecast.*
 // () : Se indica para especificar el constructor a usar por defecto
 class ForecastActivity : AppCompatActivity() {
 
-    val TAG = ForecastActivity::class.java.canonicalName
+    // Atributos estáticos
+    companion object {
+        val TAG = ForecastActivity::class.java.canonicalName
+
+        fun metodoEstatico() {
+
+        }
+    }
+
+    var forecast: Forecast? = null
+        set(value) {
+            if (value == null) {
+                return
+            }
+
+            forecast_image.setImageResource(value.icon)
+            forecast_description.text = value.description
+            max_temp.text = getString(R.string.max_temp_format, value.maxTemp)
+            min_temp.text = getString(R.string.min_temp_format, value.minTemp)
+            humidity.text = getString(R.string.humidity_format, value.humidity)
+        }
 
     // ? : Existen tipos opcionales como en Swift, C#, ...
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,20 +36,12 @@ class ForecastActivity : AppCompatActivity() {
         // Carga el layout de inicio
         setContentView(R.layout.activity_forecast)
 
-        val forecast = Forecast(25f,
+        forecast = Forecast(25f,
                 10f,
                 35f,
                 "Soleado con alguna nube",
                 R.drawable.ico_01)
 
-        setForecast(forecast)
-    }
-
-    fun setForecast(forecast: Forecast) {
-        forecast_image.setImageResource(forecast.icon)
-        forecast_description.text = forecast.description
-        max_temp.text = getString(R.string.max_temp_format, forecast.maxTemp)
-        min_temp.text = getString(R.string.min_temp_format, forecast.minTemp)
-        humidity.text = getString(R.string.humidity_format, forecast.humidity)
+        // Ejecutar método estático ForecastActivity.metodoEstatico()
     }
 }
