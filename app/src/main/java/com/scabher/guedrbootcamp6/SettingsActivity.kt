@@ -1,11 +1,11 @@
 package com.scabher.guedrbootcamp6
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_settings.*
-import java.time.temporal.TemporalUnit
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -44,15 +44,22 @@ class SettingsActivity : AppCompatActivity() {
             else
                 R.id.farenheit_rb
         )
-
-
     }
 
     private fun cancelSettings() {
+        setResult(Activity.RESULT_CANCELED)
         finish()  // Vuelve a la pantalla anterior
     }
 
     private fun acceptSetting() {
+        // Creamos los datos de regreso, en este caso las unidades elegidas
+        val returnIntent = Intent()
+        when (units_rg.checkedRadioButtonId) {
+            R.id.celsius_rb -> returnIntent.putExtra(EXTRA_UNITS, TemperatureUnit.CELSIUS)
+            R.id.farenheit_rb -> returnIntent.putExtra(EXTRA_UNITS, TemperatureUnit.FAHRENHEIT)
+        }
+
+        setResult(Activity.RESULT_OK, returnIntent)
         finish()
     }
 }
