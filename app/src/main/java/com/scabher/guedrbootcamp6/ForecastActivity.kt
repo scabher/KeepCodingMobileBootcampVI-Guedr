@@ -1,7 +1,10 @@
 package com.scabher.guedrbootcamp6
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_forecast.*
 
 // AppCompatActivity : Compatibilidad con versiones anteriores de Android.
@@ -43,5 +46,26 @@ class ForecastActivity : AppCompatActivity() {
                 R.drawable.ico_01)
 
         // Ejecutar método estático ForecastActivity.metodoEstatico()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        // super.onCreateOptionsMenu(menu) --> no hace falta ponerlo porque no hace nada
+
+        // Pilla el xml donde se define el menú y lo transforma dentro del objeto menú
+        menuInflater.inflate(R.menu.activity_forecast, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.menu_show_settings -> {
+                // lanzamos la pantalla de ajustes
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
