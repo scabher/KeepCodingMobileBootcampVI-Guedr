@@ -1,10 +1,12 @@
-package com.scabher.guedrbootcamp6
+package com.scabher.guedrbootcamp6.activity
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.scabher.guedrbootcamp6.R
+import com.scabher.guedrbootcamp6.model.TemperatureUnit
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : AppCompatActivity() {

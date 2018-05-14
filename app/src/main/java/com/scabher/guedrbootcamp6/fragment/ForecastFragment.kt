@@ -1,4 +1,4 @@
-package com.scabher.guedrbootcamp6
+package com.scabher.guedrbootcamp6.fragment
 
 import android.app.Activity
 import android.app.Fragment
@@ -7,6 +7,10 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
 import android.view.*
+import com.scabher.guedrbootcamp6.R
+import com.scabher.guedrbootcamp6.activity.SettingsActivity
+import com.scabher.guedrbootcamp6.model.Forecast
+import com.scabher.guedrbootcamp6.model.TemperatureUnit
 import kotlinx.android.synthetic.main.fragment_forecast.*
 
 class ForecastFragment: Fragment() {

@@ -1,6 +1,4 @@
-package com.scabher.guedrbootcamp6
-
-import kotlin.math.max
+package com.scabher.guedrbootcamp6.model
 
 
 enum class TemperatureUnit {

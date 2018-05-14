@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/default_activity_padding"
-    tools:context=".ForecastActivity">
+    tools:context=".activity.ForecastActivity">
 
     <!-- todos los fragmente tienen que tener un id -->
     <fragment
         android:id="@+id/forecast_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.scabher.guedrbootcamp6.ForecastFragment"/>
+        android:name="com.scabher.guedrbootcamp6.fragment.ForecastFragment"/>
 
 </FrameLayout>

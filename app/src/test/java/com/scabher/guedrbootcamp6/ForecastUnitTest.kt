@@ -1,5 +1,7 @@
 package com.scabher.guedrbootcamp6
 
+import com.scabher.guedrbootcamp6.model.Forecast
+import com.scabher.guedrbootcamp6.model.TemperatureUnit
 import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
