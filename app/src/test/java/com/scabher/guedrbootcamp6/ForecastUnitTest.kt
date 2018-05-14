@@ -28,12 +28,12 @@ class ForecastUnitTest {
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun maxHumidity_isCorrect() {
+    fun humidityOverRange_isCorrect() {
         Forecast(25f, 10f, 100.1f, "Sol", R.drawable.ico_01)
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun minHumidity_isCorrect() {
+    fun humidityUnderRange_isCorrect() {
         Forecast(25f, 10f, -1f, "Sol", R.drawable.ico_01)
     }
 }
