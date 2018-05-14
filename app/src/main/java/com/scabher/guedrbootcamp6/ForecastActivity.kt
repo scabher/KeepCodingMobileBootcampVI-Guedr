@@ -1,13 +1,14 @@
 package com.scabher.guedrbootcamp6
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import kotlinx.android.synthetic.main.activity_forecast.*
 
 // AppCompatActivity : Compatibilidad con versiones anteriores de Android.
@@ -39,6 +40,7 @@ class ForecastActivity : AppCompatActivity() {
             humidity.text = getString(R.string.humidity_format, value.humidity)
         }
 
+    // Getter
     val units: TemperatureUnit
         get() = when(PreferenceManager.getDefaultSharedPreferences(this)
                     .getInt(PREFERENCE_UNITS, TemperatureUnit.CELSIUS.ordinal)) {
@@ -51,8 +53,6 @@ class ForecastActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         // Carga el layout de inicio
         setContentView(R.layout.activity_forecast)
-
-
 
         forecast = Forecast(25f,
                 10f,
@@ -91,6 +91,7 @@ class ForecastActivity : AppCompatActivity() {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     // Volvemos de settings con datos sobre las unidades elegidas por el usuario
                     val newUnits = data.getSerializableExtra(SettingsActivity.EXTRA_UNITS) as TemperatureUnit
+                    val oldUnits = units
 
                     // Guardamos las preferencias del usuario
                     PreferenceManager.getDefaultSharedPreferences(this)
@@ -100,6 +101,25 @@ class ForecastActivity : AppCompatActivity() {
 
                     // Actualizo la interfaz
                     updateTempreatureView()
+
+                    val newUnitsString = if (newUnits == TemperatureUnit.CELSIUS) getString(R.string.user_selects_celsius)
+                        else getString(R.string.user_selects_fahrenheit)
+
+                    // Toast.makeText(this, newUnitsString, Toast.LENGTH_LONG).show()
+
+                    // Al final como es una closure se puede poner una trailing clousure, como Swift
+                    Snackbar.make(findViewById<View>(android.R.id.content), newUnitsString, Snackbar.LENGTH_LONG)
+                            .setAction("Deshacer") {
+                                // Guardo las unidades anteriores
+                                PreferenceManager.getDefaultSharedPreferences(this)
+                                        .edit()
+                                        .putInt(PREFERENCE_UNITS, oldUnits.ordinal)
+                                        .apply()
+
+                                // Actualizo para mostrar las unidades anteriores
+                                updateTempreatureView()
+                            }
+                            .show()
                 }
             }
         }

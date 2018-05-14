@@ -11,4 +11,6 @@
     <string name="celsius_units">Unidades Celsius</string>
     <string name="farenheit_units">Unidades Fahrenheit</string>
     <string name="settings">Ajustes</string>
+    <string name="user_selects_celsius">El usuario a seleccionado Celsius</string>
+    <string name="user_selects_fahrenheit">El usuario ha seleccionado Fahrenheit</string>
 </resources>
