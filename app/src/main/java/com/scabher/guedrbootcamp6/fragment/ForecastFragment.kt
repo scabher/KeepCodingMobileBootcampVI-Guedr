@@ -144,6 +144,14 @@ class ForecastFragment: Fragment() {
         }
     }
 
+    // Indica si este fragment es visible al usuario o no
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser && forecast != null) {
+            updateTempreatureView()
+        }
+    }
+
 
     // Se actualiza la interfaz con las temperaturas
     fun updateTempreatureView() {
