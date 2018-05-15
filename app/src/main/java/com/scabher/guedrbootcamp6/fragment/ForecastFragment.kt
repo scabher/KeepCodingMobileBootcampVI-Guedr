@@ -1,19 +1,40 @@
 package com.scabher.guedrbootcamp6.fragment
 
 import android.app.Activity
-import android.app.Fragment
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
+import android.support.v4.app.Fragment
 import android.view.*
 import com.scabher.guedrbootcamp6.R
 import com.scabher.guedrbootcamp6.activity.SettingsActivity
+import com.scabher.guedrbootcamp6.model.City
 import com.scabher.guedrbootcamp6.model.Forecast
 import com.scabher.guedrbootcamp6.model.TemperatureUnit
 import kotlinx.android.synthetic.main.fragment_forecast.*
 
 class ForecastFragment: Fragment() {
+
+    companion object {
+        val ARG_CITY = "ARG_CITY"
+
+        fun newInstance(city: City): Fragment {
+            // Se crea el fragment
+            val fragment = ForecastFragment()
+
+            // Se crean los argumentos del fragment
+            val arguments = Bundle()
+            arguments.putSerializable(ARG_CITY, city)
+
+            // Se asignan los argumentos al fragment
+            fragment.arguments = arguments
+
+            // Devolvemos el fragment
+            return fragment
+        }
+    }
+
     val REQUEST_SETTINGS = 1
     val PREFERENCE_UNITS = "PREFERENCE"
 
@@ -47,22 +68,18 @@ class ForecastFragment: Fragment() {
     }
 
     // Ya la vista está creada y accesible
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        return inflater?.inflate(R.layout.fragment_forecast, container, false)!!
+        return inflater.inflate(R.layout.fragment_forecast, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Se mueve aquí porque si lo hacemos en el onCreateView la vista todavía no está
-        // y se llama al setter y falla
-        forecast = Forecast(25f,
-                10f,
-                35f,
-                "Soleado con alguna nube",
-                R.drawable.ico_01)
+        val city = arguments?.getSerializable(ARG_CITY) as City
+        forecast = city.forecast
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -77,7 +94,7 @@ class ForecastFragment: Fragment() {
             R.id.menu_show_settings -> {
                 // Lanzamos la pantalla de ajustes
                 // la propiedad activity de los fragments es una referencia a la actividad que lo contiene
-                startActivityForResult(SettingsActivity.intent(activity, units), REQUEST_SETTINGS)
+                startActivityForResult(SettingsActivity.intent(activity!!, units), REQUEST_SETTINGS)
 
                 return true
             }
@@ -110,7 +127,7 @@ class ForecastFragment: Fragment() {
                     // Toast.makeText(this, newUnitsString, Toast.LENGTH_LONG).show()
 
                     // Al final como es una closure se puede poner una trailing clousure, como Swift
-                    Snackbar.make(view, newUnitsString, Snackbar.LENGTH_LONG)
+                    Snackbar.make(view!!, newUnitsString, Snackbar.LENGTH_LONG)
                             .setAction("Deshacer") {
                                 // Guardo las unidades anteriores
                                 PreferenceManager.getDefaultSharedPreferences(activity)

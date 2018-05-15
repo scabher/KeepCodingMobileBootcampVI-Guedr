@@ -1,5 +1,7 @@
 package com.scabher.guedrbootcamp6.model
 
+import java.io.Serializable
+
 
 enum class TemperatureUnit {
     CELSIUS,
@@ -10,7 +12,7 @@ enum class TemperatureUnit {
 // Con 'val' no las crea, con lo que hay que crear los getters y setters.
 // data class : Crea los getter y los setters de todos los parámetros que se pasan al constructor
 // se hacen privadas las temperaturas para crear los getter y setters para ellas
-data class Forecast (private val maxTemp: Float, private val minTemp: Float, val humidity: Float, val description: String, val icon: Int) {
+data class Forecast (private val maxTemp: Float, private val minTemp: Float, val humidity: Float, val description: String, val icon: Int): Serializable {
 
     protected fun toFahrenheit(celsius: Float) = celsius * 1.8f + 32
 
