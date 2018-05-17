@@ -2,7 +2,9 @@ package com.scabher.guedrbootcamp6.model
 
 import com.scabher.guedrbootcamp6.R
 
-class Cities {
+
+// Si se define con 'object' se convierte en un Singleton
+object Cities {
 
     private val cities: List<City> = listOf (
         City("S/C Tenerife", Forecast(28f, 22f, 35f, "Soleado", R.drawable.ico_02)),
