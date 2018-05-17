@@ -12,6 +12,7 @@ import com.scabher.guedrbootcamp6.activity.SettingsActivity
 import com.scabher.guedrbootcamp6.model.City
 import com.scabher.guedrbootcamp6.model.Forecast
 import com.scabher.guedrbootcamp6.model.TemperatureUnit
+import kotlinx.android.synthetic.main.content_forecast.*
 import kotlinx.android.synthetic.main.fragment_forecast.*
 
 class ForecastFragment: Fragment() {
@@ -33,6 +34,10 @@ class ForecastFragment: Fragment() {
             // Devolvemos el fragment
             return fragment
         }
+    }
+
+    private enum class  VIEW_INDEX(val index: Int) {
+        LOADING(0), FORECAST(1)
     }
 
     val REQUEST_SETTINGS = 1
@@ -77,9 +82,19 @@ class ForecastFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val city = arguments?.getSerializable(ARG_CITY) as City
-        forecast = city.forecast
+        // Se configuran las animaciones para el ViewSwitcher (igual para cualquier Switcher)
+        view_switcher.setInAnimation(activity, android.R.anim.fade_in)
+        view_switcher.setOutAnimation(activity, android.R.anim.fade_out)
 
+        // Se hace que ViewSwitcher muestra la primera vista
+        view_switcher.displayedChild = VIEW_INDEX.LOADING.index
+
+        // Para simular el retardo de la carga de datos
+        view.postDelayed({
+            val city = arguments?.getSerializable(ARG_CITY) as City
+            forecast = city.forecast
+            view_switcher.displayedChild = VIEW_INDEX.FORECAST.index
+        }, 3000 /*R.integer.default_fake_delay.toLong()*/)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
