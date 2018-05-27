@@ -2,15 +2,17 @@ package com.scabher.guedrbootcamp6.activity
 
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcel
-import android.os.Parcelable
+import android.support.design.widget.Snackbar
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.ViewGroup
+import android.widget.EditText
 import com.scabher.guedrbootcamp6.R
 import com.scabher.guedrbootcamp6.fragment.CityListFragment
 import com.scabher.guedrbootcamp6.fragment.CityListFragment.OnCitySelectedListener
 import com.scabher.guedrbootcamp6.fragment.CityPagerFragment
 import com.scabher.guedrbootcamp6.model.City
+import kotlinx.android.synthetic.main.activity_forecast.*
 
 // AppCompatActivity : Compatibilidad con versiones anteriores de Android.
 // () : Se indica para especificar el constructor a usar por defecto
@@ -49,7 +51,7 @@ class ForecastActivity: AppCompatActivity(), OnCitySelectedListener {
         }
 
         if (findViewById<ViewGroup>(R.id.view_pager_fragment) != null) {
-            // Se ha cargado una interfaz que tienen el hueco para el fragment CitiListFragment
+            // Se ha cargado una interfaz que tienen el hueco para el fragment CityListFragment
 
             // Se comprueba que todavía no está el fragment en la jerarquía
             if (supportFragmentManager.findFragmentById(R.id.view_pager_fragment) == null) {
@@ -58,6 +60,21 @@ class ForecastActivity: AppCompatActivity(), OnCitySelectedListener {
                         .add(R.id.view_pager_fragment, CityPagerFragment.newInstance(0))
                         .commit()
             }
+        }
+
+        add_button.setOnClickListener {
+            val customView = layoutInflater.inflate(R.layout.view_cityinput, null)
+            val cityNameText = customView.findViewById<EditText>(R.id.city_name)
+            AlertDialog.Builder(this)
+                    .setTitle("Añadir Ciudad")
+                    .setMessage("Introduce la ciudad a añadir")
+                    .setView(customView)
+                    .setPositiveButton(android.R.string.ok, { _, _ ->
+                        // Se añade la ciudad
+                        Snackbar.make(findViewById(android.R.id.content), cityNameText.text, Snackbar.LENGTH_LONG).show()
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show()
         }
     }
 

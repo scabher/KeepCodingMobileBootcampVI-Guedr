@@ -13,4 +13,11 @@
     <string name="settings">Ajustes</string>
     <string name="user_selects_celsius">El usuario a seleccionado Celsius</string>
     <string name="user_selects_fahrenheit">El usuario ha seleccionado Fahrenheit</string>
+    <string name="today">Hoy</string>
+    <string name="tomorrow">Mañana</string>
+    <string name="day_after_tomorrow">Pasado mañana</string>
+    <string name="after_3_days">Dentro de 3 días</string>
+    <string name="after_4_days">Dentro de 4 días</string>
+    <string name="unknown_day">Días desconocido</string>
+    <string name="transition_to_detail">transition_to_detail</string>
 </resources>

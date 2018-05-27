@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.SettingsActivity">
-
+    android:minWidth="300dp"
+    android:minHeight="150dp"
+    android:animateLayoutChanges="true"
+    tools:context=".fragment.SettingsDialog">
     <TextView
         android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
@@ -20,7 +20,7 @@
         android:text="@string/select_units"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <RadioGroup
         android:id="@+id/units_rg"
@@ -34,18 +34,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView">
-
         <RadioButton
             android:id="@+id/celsius_rb"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/celsius_units" />
-
         <RadioButton
             android:id="@+id/farenheit_rb"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/farenheit_units" />
     </RadioGroup>
@@ -55,8 +53,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:text="@android:string/ok"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,10 +67,12 @@
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@android:string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ok_btn"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/units_rg"
+        app:layout_constraintVertical_bias="1.0" />
+    
 </android.support.constraint.ConstraintLayout>

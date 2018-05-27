@@ -3,16 +3,19 @@ package com.scabher.guedrbootcamp6.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.GridLayoutManager
 import android.view.*
-import com.scabher.guedrbootcamp6.R
-import com.scabher.guedrbootcamp6.activity.SettingsActivity
+import com.scabher.guedrbootcamp6.*
+import com.scabher.guedrbootcamp6.activity.DetailActivity
+import com.scabher.guedrbootcamp6.adapter.ForecastRecyclerViewAdapter
+import com.scabher.guedrbootcamp6.model.Cities
 import com.scabher.guedrbootcamp6.model.City
 import com.scabher.guedrbootcamp6.model.Forecast
 import com.scabher.guedrbootcamp6.model.TemperatureUnit
-import kotlinx.android.synthetic.main.content_forecast.*
 import kotlinx.android.synthetic.main.fragment_forecast.*
 
 class ForecastFragment: Fragment() {
@@ -41,28 +44,14 @@ class ForecastFragment: Fragment() {
     }
 
     val REQUEST_SETTINGS = 1
-    val PREFERENCE_UNITS = "PREFERENCE"
 
-    var forecast: Forecast? = null
+    var forecast: List<Forecast>? = null
         set(value) {
-            if (value == null) {
-                return
-            }
-
             field = value
-            forecast_image.setImageResource(value.icon)
-            forecast_description.text = value.description
-
-            updateTempreatureView()
-            humidity.text = getString(R.string.humidity_format, value.humidity)
-        }
-
-    // Getter
-    val units: TemperatureUnit
-        get() = when(PreferenceManager.getDefaultSharedPreferences(activity)
-                .getInt(PREFERENCE_UNITS, TemperatureUnit.CELSIUS.ordinal)) {
-            TemperatureUnit.CELSIUS.ordinal -> TemperatureUnit.CELSIUS
-            else -> TemperatureUnit.FAHRENHEIT
+            if (value != null) {
+                forecast_list?.adapter = ForecastRecyclerViewAdapter(value)
+                setRecyclerViewClickListener()
+            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,9 +80,19 @@ class ForecastFragment: Fragment() {
 
         // Para simular el retardo de la carga de datos
         view.postDelayed({
+            // Se configura el RecyclerView. Primero se dice cómo se visualizan sus elementos
+            // forecast_list.layoutManager = LinearLayoutManager(activity)
+            forecast_list?.layoutManager = GridLayoutManager(activity, resources.getInteger(R.integer.forecast_columns))
+
+            // Se dice quién es el que anima al RecyclerView
+            forecast_list?.itemAnimator = DefaultItemAnimator()
+
+            // Si se pulsa una fila, avisa del evento
+
+            // Datos para rellenar el RecyclerView, tarea del setter de forecast
             val city = arguments?.getSerializable(ARG_CITY) as City
             forecast = city.forecast
-            view_switcher.displayedChild = VIEW_INDEX.FORECAST.index
+            view_switcher?.displayedChild = VIEW_INDEX.FORECAST.index
         }, 3000 /*R.integer.default_fake_delay.toLong()*/)
     }
 
@@ -109,7 +108,10 @@ class ForecastFragment: Fragment() {
             R.id.menu_show_settings -> {
                 // Lanzamos la pantalla de ajustes
                 // la propiedad activity de los fragments es una referencia a la actividad que lo contiene
-                startActivityForResult(SettingsActivity.intent(activity!!, units), REQUEST_SETTINGS)
+                // startActivityForResult(SettingsActivity.intent(activity!!, getTemperatureUnits(activity!!)), REQUEST_SETTINGS)
+                val dialog = SettingsDialog.newInstance(getTemperatureUnits(activity!!))
+                dialog.setTargetFragment(this, REQUEST_SETTINGS)
+                dialog.show(fragmentManager, null)
 
                 return true
             }
@@ -124,14 +126,11 @@ class ForecastFragment: Fragment() {
             REQUEST_SETTINGS -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     // Volvemos de settings con datos sobre las unidades elegidas por el usuario
-                    val newUnits = data.getSerializableExtra(SettingsActivity.EXTRA_UNITS) as TemperatureUnit
-                    val oldUnits = units
+                    val newUnits = data.getSerializableExtra(SettingsDialog.ARG_UNITS) as TemperatureUnit
+                    val oldUnits = getTemperatureUnits(activity!!)
 
                     // Guardamos las preferencias del usuario
-                    PreferenceManager.getDefaultSharedPreferences(activity)
-                            .edit()
-                            .putInt(PREFERENCE_UNITS, newUnits.ordinal)
-                            .apply()
+                    setTemperatureUnits(activity!!, newUnits)
 
                     // Actualizo la interfaz
                     updateTempreatureView()
@@ -145,10 +144,7 @@ class ForecastFragment: Fragment() {
                     Snackbar.make(view!!, newUnitsString, Snackbar.LENGTH_LONG)
                             .setAction("Deshacer") {
                                 // Guardo las unidades anteriores
-                                PreferenceManager.getDefaultSharedPreferences(activity)
-                                        .edit()
-                                        .putInt(PREFERENCE_UNITS, oldUnits.ordinal)
-                                        .apply()
+                                setTemperatureUnits(activity!!, oldUnits)
 
                                 // Actualizo para mostrar las unidades anteriores
                                 updateTempreatureView()
@@ -167,15 +163,32 @@ class ForecastFragment: Fragment() {
         }
     }
 
+    fun setRecyclerViewClickListener() {
+        val adapter = forecast_list?.adapter as? ForecastRecyclerViewAdapter
+
+        // Si se pulsa una fila, se maneja el evento
+        adapter?.onClickListener = View.OnClickListener {
+            // Se ha pulsado un elemento del RecyclerView
+            // NOTA: Lo ideal sería crear una interfaz que sea implementado en el contenedor del fragment
+
+            // Posición que ocupa dentro del contenedor
+            val forecastIndex = forecast_list.getChildAdapterPosition(it)
+            val city = arguments?.getSerializable(ARG_CITY) as City
+            val cityIndex = Cities.getIndex(city)
+
+            // Opciones especiales para navegar con vistas comunes
+            val animationOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    activity!!,
+                    it,
+                    getString(R.string.transition_to_detail)
+            )
+            startActivity(DetailActivity.intent(activity!!, cityIndex, forecastIndex), animationOptions.toBundle())
+        }
+    }
 
     // Se actualiza la interfaz con las temperaturas
     fun updateTempreatureView() {
-        val unitsString = unitsToString()
-        max_temp?.text = getString(R.string.max_temp_format, forecast?.getMaxTemp(units), unitsString)
-        min_temp?.text = getString(R.string.min_temp_format, forecast?.getMinTemp(units), unitsString)
+        forecast_list?.adapter = ForecastRecyclerViewAdapter(forecast!!)
+        setRecyclerViewClickListener()
     }
-
-    fun unitsToString() = if (units== TemperatureUnit.CELSIUS) "ºC"
-        else "F"
-
 }
